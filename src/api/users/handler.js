@@ -4,10 +4,11 @@ class UserHandler {
     this._validator = validator;
 
     this.postUserHandler = this.postUserHandler.bind(this);
+    this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
   }
 
   async postUserHandler(request, h) {
-    console.log(this._validator);
+    
     this._validator.validateUserPayload(request.payload);
     const { username, password, fullname } = request.payload;
     const userId = await this._service.addUser({
@@ -28,9 +29,9 @@ class UserHandler {
   }
 
   async getUserByIdHandler(request) {
-    const { id } = request.params;
-    const user = await this._service.getUserById(id);
-
+    const { userId } = request.params;
+    const user = await this._service.getUserById(userId);
+    console.log(user);  
     return {
       status: "success",
       data: {
