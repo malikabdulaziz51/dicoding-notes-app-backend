@@ -69,7 +69,6 @@ class UserService {
   }
 
   async getUserById(userId) {
-    console.log(userId);
     const query = {
       text: "SELECT id, username, fullname FROM users WHERE id = $1",
       values: [userId],
