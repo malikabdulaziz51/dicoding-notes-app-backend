@@ -44,7 +44,7 @@ class UserService {
       text: "INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id",
       values: [id, username, hashPassword, fullname],
     };
-
+    console.log(query);
     return this._pool.query(query).then((result) => {
       if (!result.rows.length) {
         throw new InvariantError("User gagal ditambahkan");
@@ -81,6 +81,18 @@ class UserService {
 
     return result.rows[0];
   }
+
+  async getUserByUsername(username) {
+    const query = {
+      text: "SELECT id, username, fullname FROM users WHERE username LIKE $1",
+      values: [`%${username}%`],
+    };
+  
+    const result = await this._pool.query(query);
+    return result.rows;
+  }
 }
+
+
 
 module.exports = UserService;
