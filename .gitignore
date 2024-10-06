@@ -3,3 +3,4 @@ dicoding-notes-api-webserver.pem
 managed_context
 .env
 .prod.env
+src/api/uploads/file
