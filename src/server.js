@@ -34,9 +34,12 @@ const StorageService = require("./services/S3/StorageService");
 const UploadsValidator = require("./validator/uploads");
 const Inert = require("@hapi/inert");
 
+//cache redis
+const CacheService = require("./services/redis/CacheService");
 const init = async () => {
-  const collaborationsService = new CollaborationsService();
-  const notesService = new NotesService();
+  const cacheService = new CacheService();
+  const collaborationsService = new CollaborationsService(cacheService);
+  const notesService = new NotesService(collaborationsService, cacheService);
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const storageService = new StorageService();

@@ -1,10 +1,12 @@
 const { nanoid } = require("nanoid");
 const { Pool } = require("pg");
 const InvariantError = require("../../exceptions/InvariantError");
+const CacheService = require("../redis/CacheService");
 
 class CollaborationsService {
   constructor() {
     this._pool = new Pool();
+    this._cacheService = new CacheService();
   }
 
   async addCollaboration(noteId, userId) {
@@ -19,6 +21,7 @@ class CollaborationsService {
       throw new InvariantError("Kolaborasi gagal ditambahkan");
     }
 
+    await this._cacheService.delete(`notes:${userId}`);
     return result.rows[0].id;
   }
 
@@ -32,6 +35,8 @@ class CollaborationsService {
     if (!result.rows.length) {
       throw new InvariantError("Kolaborasi gagal dihapus");
     }
+
+    await this._cacheService.delete(`notes:${userId}`);
   }
 
   async verifyCollaborator(noteId, userId) {
@@ -42,7 +47,7 @@ class CollaborationsService {
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      console.log('error');
+      console.log("error");
       throw new InvariantError("Kolaborator gagal diverifikasi");
     }
   }
